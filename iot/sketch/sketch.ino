@@ -1,11 +1,18 @@
 int moistureSensors[] = {A0, A3, A4, A5}; // Array com as portas
 int sensorValues[sizeof(moistureSensors) / sizeof(moistureSensors[0])];
+int moisturePercent[sizeof(moistureSensors) / sizeof(moistureSensors[0])];
 int lightSensor = A1;
 int tempSensor = A2;
 int valorLeitura = 0;
 int lightValue = 0;
 int tempValue = 0;
 int umidadePercentual = 0;
+
+int LED_G[] = {6, 6, 9, 2};  // LEDs verdes
+int LED_Y[] = {7, 7, 10, 3}; // LEDs amarelos
+int LED_R[] = {8, 8, 11, 4}; // LEDs vermelhos
+
+int idealMoisture[] = {-1, -1, -1 , -1};
 
 const double beta = 3600.0;
 const double r0 = 10000.0;
@@ -19,21 +26,134 @@ const double R = 5000.0;
 // Numero de amostras na leitura
 const int nAmostras = 5;
 
+bool ledsOn = true;
+
 void setup() {
   Serial.begin(9600);
+  Serial.println("");
+  delay(1000);
+  while (Serial.available() > 0) {
+    Serial.read(); // Limpa todos os dados no buffer serial
+  }
+  requestServerData();
+  delay(5000);
+
+  if(Serial.available() > 0){
+      String data = Serial.readStringUntil('\n');
+      Serial.println(data);
+      parseData(data);
+  }
+  
+   for (int i = 0; i < sizeof(LED_G) / sizeof(LED_G[0]); i++) {
+    pinMode(LED_G[i], OUTPUT);
+    pinMode(LED_Y[i], OUTPUT);
+    pinMode(LED_R[i], OUTPUT);
+  }
 }
 
 void loop() {
 
+  if(Serial.available() > 0){
+      String data = Serial.readStringUntil('\n');
+      parseData(data);
+  }
   
   tempValue = analogRead(tempSensor);
   getLightPercentage();
   getTemperatureInCelsius(tempValue);
   getSoilMoisture();
+  displayLeds();
+  
 
   Serial.println("---------------------------");
 
   delay(3000);  // Aguarda 500 ms entre as leituras
+}
+
+
+void requestServerData(){
+  Serial.println("GET: config");
+}
+
+void parseData(String data){
+
+  /*
+  * It will always come like A0 - moisture: value
+  */
+  if (data.startsWith("A")) {
+    int sensorId = data.substring(1, data.indexOf(" ")).toInt(); // Extrai o número do sensor (0, 1, etc.)
+    int moistureStart = data.indexOf("moisture: ") + 10;
+    int moisture = data.substring(moistureStart).toInt();
+
+    for (int i = 0; i < sizeof(moistureSensors) / sizeof(moistureSensors[0]); i++) {
+      if (moistureSensors[i]-A0 == sensorId) {
+        idealMoisture[i] = moisture;
+
+        Serial.print("Valores atualizados para o Sensor ");
+        Serial.print("A");
+        Serial.print(i);  // Mostrar o índice do sensor no array
+        Serial.print(": Ideal ");
+        Serial.println(moisture);
+        break;
+      }
+    }
+
+  }else if(data.startsWith("LED")){
+    if(data == "LED: On"){
+      ledsOn = true;
+    }else{
+      ledsOn = false;
+    }
+  }else {
+    Serial.println("Formato inválido!");
+  }
+}
+
+void displayLeds(){
+
+  if(ledsOn == false) return;
+
+  for(int i = 0; i < sizeof(LED_G) / sizeof(LED_G[0]); i++) {
+    int moisture = moisturePercent[i];
+    int currentIdealMoisture = idealMoisture[i];
+    float green_offset_up = 1.1;
+    float green_offset_down = 0.9;
+    float yellow_offset_up = 1.2;
+    float yellow_offset_down = 0.8;
+
+    // Verifique se a umidade está dentro do intervalo esperado (não negativa)
+    if (currentIdealMoisture >= 0) {
+      Serial.println(moisture);
+
+      // Verifique se o valor da umidade está dentro da faixa verde
+      if (moisture >= currentIdealMoisture * green_offset_down && moisture <= currentIdealMoisture * green_offset_up) {
+        digitalWrite(LED_G[i], HIGH);
+        digitalWrite(LED_Y[i], LOW);
+        digitalWrite(LED_R[i], LOW);
+      }
+      // Verifique se o valor da umidade está fora da faixa verde, mas dentro da faixa amarela
+      else if (moisture >= currentIdealMoisture * yellow_offset_down && moisture <= currentIdealMoisture * yellow_offset_up) {
+        digitalWrite(LED_G[i], LOW);
+        digitalWrite(LED_Y[i], HIGH);
+        digitalWrite(LED_R[i], LOW);
+      }
+      // Caso contrário, a umidade está muito fora da faixa, acende o LED vermelho
+      else {
+        digitalWrite(LED_G[i], LOW);
+        digitalWrite(LED_Y[i], LOW);
+        digitalWrite(LED_R[i], HIGH);
+      }
+    } else {
+      // Se o valor da umidade for inválido (negativo), apaga todos os LEDs
+      digitalWrite(LED_G[i], LOW);
+      digitalWrite(LED_Y[i], LOW);
+      digitalWrite(LED_R[i], LOW);
+    }
+
+    pinMode(LED_G[i], OUTPUT);
+    pinMode(LED_Y[i], OUTPUT);
+    pinMode(LED_R[i], OUTPUT);
+  }
 }
 
 double getTemperatureInCelsius(int thermistorOutput){
@@ -62,11 +182,14 @@ void getSoilMoisture(){
   }
   for (int i = 0; i < sizeof(sensorValues) / sizeof(sensorValues[0]); i++) {
     // Mapeia a leitura de umidade de 0-600 para 0-100%
-    umidadePercentual = map(sensorValues[i], 673, 0, 0, 100);
+    umidadePercentual = map(sensorValues[i], 673, 330, 0, 100);
+    moisturePercent[i] = umidadePercentual;
      Serial.print("A");
     Serial.print(moistureSensors[i] - A0); // Converte para o formato A0, A1, etc.
     Serial.print(": ");
-    Serial.println(umidadePercentual);
+    Serial.print(umidadePercentual);
+    Serial.print(" - Ideal: ");
+    Serial.println(idealMoisture[i]);
   }
 }
 
