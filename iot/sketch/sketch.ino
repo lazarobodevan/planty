@@ -27,6 +27,14 @@ const double R = 5000.0;
 const int nAmostras = 5;
 
 bool ledsOn = true;
+unsigned long lastLedBlinkTime = 0;      // Tempo da última execução dos LEDs
+unsigned long lastOtherFunctionsTime = 0; // Tempo da última execução das outras funções
+
+const unsigned long ledBlinkInterval = 500;       // Intervalo para os LEDs piscarem
+const unsigned long otherFunctionsInterval = 3000; // Intervalo para as outras funções
+
+bool isBlinking = false;
+int blinkCount = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -35,6 +43,13 @@ void setup() {
   while (Serial.available() > 0) {
     Serial.read(); // Limpa todos os dados no buffer serial
   }
+  
+   for (int i = 0; i < sizeof(LED_G) / sizeof(LED_G[0]); i++) {
+    pinMode(LED_G[i], OUTPUT);
+    pinMode(LED_Y[i], OUTPUT);
+    pinMode(LED_R[i], OUTPUT);
+  }
+
   requestServerData();
   delay(5000);
 
@@ -43,14 +58,7 @@ void setup() {
       Serial.println(data);
       parseData(data);
   }
-  
-   for (int i = 0; i < sizeof(LED_G) / sizeof(LED_G[0]); i++) {
-    pinMode(LED_G[i], OUTPUT);
-    pinMode(LED_Y[i], OUTPUT);
-    pinMode(LED_R[i], OUTPUT);
-  }
 }
-
 void loop() {
 
   if(Serial.available() > 0){
@@ -58,19 +66,29 @@ void loop() {
       parseData(data);
   }
   
-  tempValue = analogRead(tempSensor);
-  getLightPercentage();
-  getTemperatureInCelsius(tempValue);
-  getSoilMoisture();
-  displayLeds();
+  executeReadings();
+  blinkLedsWhenReceiveData();
   
 
-  Serial.println("---------------------------");
-
-  delay(3000);  // Aguarda 500 ms entre as leituras
 }
 
+void executeReadings(){
+  static unsigned long lastReadingsTime = 0;
+  unsigned long currentTime = millis();
 
+  // Controle do tempo para as leituras
+  if (currentTime - lastReadingsTime >= otherFunctionsInterval) {
+    lastReadingsTime = currentTime;
+
+    tempValue = analogRead(tempSensor);
+    getLightPercentage();
+    getTemperatureInCelsius(tempValue);
+    getSoilMoisture();
+    displayLeds();
+    Serial.println("---------------------------");
+  
+  }
+}
 void requestServerData(){
   Serial.println("GET: config");
 }
@@ -88,12 +106,15 @@ void parseData(String data){
     for (int i = 0; i < sizeof(moistureSensors) / sizeof(moistureSensors[0]); i++) {
       if (moistureSensors[i]-A0 == sensorId) {
         idealMoisture[i] = moisture;
-
         Serial.print("Valores atualizados para o Sensor ");
         Serial.print("A");
         Serial.print(i);  // Mostrar o índice do sensor no array
         Serial.print(": Ideal ");
         Serial.println(moisture);
+        
+        isBlinking = true;
+        blinkCount = 0;
+
         break;
       }
     }
@@ -109,9 +130,39 @@ void parseData(String data){
   }
 }
 
+void blinkLedsWhenReceiveData() {
+  unsigned long currentMillis = millis();
+
+  // Só faz qualquer coisa se o piscar estiver ativado
+  if (isBlinking) {
+    // Verifica se o intervalo de 500ms passou
+    if (currentMillis - lastLedBlinkTime >= ledBlinkInterval) {
+      lastLedBlinkTime = currentMillis;
+
+      // Realiza a piscada até 8 vezes (4 piscadas completas, considerando que cada LED pisca 2 vezes)
+      if (blinkCount < 8) {
+        // Inverte o estado de todos os LEDs
+        for (int i = 0; i < 4; i++) {
+          bool isOn = digitalRead(LED_G[i]) == HIGH;
+          digitalWrite(LED_G[i], isOn ? LOW : HIGH);
+          digitalWrite(LED_Y[i], isOn ? LOW : HIGH);
+          digitalWrite(LED_R[i], isOn ? LOW : HIGH);
+        }
+        blinkCount++;
+      } else {
+        // Depois de 8 piscadas, desativa o piscar
+        isBlinking = false;
+      }
+    }
+  }
+}
+
+
+
+
 void displayLeds(){
 
-  if(ledsOn == false) return;
+  if(ledsOn == false || isBlinking) return;
 
   for(int i = 0; i < sizeof(LED_G) / sizeof(LED_G[0]); i++) {
     int moisture = moisturePercent[i];
@@ -149,11 +200,8 @@ void displayLeds(){
       digitalWrite(LED_Y[i], LOW);
       digitalWrite(LED_R[i], LOW);
     }
-
-    pinMode(LED_G[i], OUTPUT);
-    pinMode(LED_Y[i], OUTPUT);
-    pinMode(LED_R[i], OUTPUT);
   }
+
 }
 
 double getTemperatureInCelsius(int thermistorOutput){
@@ -213,3 +261,5 @@ double convertResistanceToLux(double resistance) {
   if (resistance > 1000) return 10000; // Alta luz (~10.000 lux)
   return 50000;                        // Pleno sol (~50.000 lux)
 }
+
+
