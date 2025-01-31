@@ -6,7 +6,7 @@ services:
     container_name: postgres_planty
     restart: always
     environment:
-      POSTGRES_USER: admin
+      POSTGRES_USER: lazaro
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: planty
     ports:
@@ -17,6 +17,9 @@ services:
   plantyapi:
     build:
       context: .
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    privileged: true
     container_name: plantyapi
     environment:
       ASPNETCORE_ENVIRONMENT: http
@@ -26,9 +29,12 @@ services:
       - postgres
     networks:
       - app-network
+    command: >
+      sh -c "until pg_isready -h postgres_planty -U lazaro; do echo 'Waiting for PostgreSQL...'; sleep 2; done && dotnet ef database update && dotnet API.dll"
 
 volumes:
   postgres_data:
 
 networks:
     app-network:
+      driver: bridge
