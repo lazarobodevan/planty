@@ -1,4 +1,4 @@
-import 'package:app/screens/plant.dart';
+import 'package:app/screens/home/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: PlantScreen(),
+      home: Home(),
     );
   }
 }

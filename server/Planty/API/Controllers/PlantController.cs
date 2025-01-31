@@ -34,9 +34,9 @@ namespace API.Controllers
             this.plantRepository = plantRepository;
 
             createPlantUseCase = new CreatePlantUseCase(plantRepository, sensorRepository);
-            getPlantByIdUseCase = new GetPlantByIdUseCase(plantRepository);
+            getPlantByIdUseCase = new GetPlantByIdUseCase(plantRepository, serialService);
             deletePlantByIdUseCase = new DeletePlantUseCase(plantRepository);
-            getPlantsUseCase = new GetPlantsUseCase(plantRepository);
+            getPlantsUseCase = new GetPlantsUseCase(plantRepository, serialService);
             updatePlantUseCase = new UpdatePlantUseCase(plantRepository);
 
             this.serialService = serialService;
@@ -71,7 +71,7 @@ namespace API.Controllers
                     return StatusCode(StatusCodes.Status200OK, plants);
                 }
             } catch (Exception ex) {
-                return BadRequest(ex.Message);
+                return new BadRequestObjectResult(new{ erro = ex.Message });
             }
         }
 

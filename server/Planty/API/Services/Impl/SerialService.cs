@@ -186,6 +186,10 @@ namespace API.Services.Impl
             catch (IOException ex)
             {
                 Console.WriteLine($"Erro de I/O na porta serial: {ex.Message}");
+                if (serialPort.IsOpen) {
+                    ClosePort();
+                    reconnectTimer.Start();
+                }
             }
             catch (Exception ex)
             {
