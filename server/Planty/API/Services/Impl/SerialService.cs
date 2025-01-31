@@ -17,6 +17,8 @@ namespace API.Services.Impl
         public double Temperature { get; set; }
         public Dictionary<string, int> Moistures { get; set; }
 
+        public bool LEDStatus { get; set; }
+
         public SerialService(string portName, IServiceScopeFactory serviceScopeFactory)
         {
             serialPort = new SerialPort(portName, 9600);
@@ -30,6 +32,7 @@ namespace API.Services.Impl
             Lux = 0;
             Temperature = 0;
             Moistures = new Dictionary<string, int>();
+            LEDStatus = true;
 
             _ = InitializeAsync();
         }
@@ -144,7 +147,7 @@ namespace API.Services.Impl
                     return;
                 }
 
-                //Console.WriteLine(data);
+                Console.WriteLine(data);
 
                 // Verificar comandos específicos
                 if (data.Equals("GET: config", StringComparison.OrdinalIgnoreCase))
@@ -205,8 +208,9 @@ namespace API.Services.Impl
             }
 
             // Enviar estado dos LEDs
-            var ledState = GetLedStateFromDatabase();
+            var ledState = GetLedState();
             serialPort.WriteLine($"LED: {ledState}");
+            Console.WriteLine($"LED: {ledState}");
         }
 
         public void UpdateSensor(string sensorId, int value)
@@ -246,9 +250,14 @@ namespace API.Services.Impl
             return messages;
         }
 
-        public string GetLedStateFromDatabase()
+        public string GetLedState()
         {
-            return "On";
+            return LEDStatus ? "On" : "Off";
+        }
+
+        public void ToggleLED() {
+            LEDStatus = !LEDStatus;
+            serialPort.WriteLine($"LED: {GetLedState()}");
         }
     }
 }

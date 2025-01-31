@@ -36,7 +36,9 @@ namespace API.Services {
 
         List<string> GetSensorConfigs();
 
-        string GetLedStateFromDatabase();
+        string GetLedState();
+
+        void ToggleLED();
     }
 
 }

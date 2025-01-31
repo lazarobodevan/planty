@@ -15,9 +15,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DatabaseContext>(options => {
-    options.UseNpgsql(builder.Configuration.GetValue<String>("ConnectionStrings:DEV"));
-});
+if (builder.Environment.IsDevelopment()) {
+    builder.Services.AddDbContext<DatabaseContext>(options => {
+        options.UseNpgsql(builder.Configuration.GetValue<String>("ConnectionStrings:DEV"));
+    });
+
+} else {
+    builder.Services.AddDbContext<DatabaseContext>(options => {
+        options.UseNpgsql(builder.Configuration.GetValue<String>("ConnectionStrings:PRD"));
+    });
+}
 
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 builder.Services.AddScoped<ISensorRepository, SensorRepository>();

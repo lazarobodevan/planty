@@ -122,8 +122,15 @@ void parseData(String data){
   }else if(data.startsWith("LED")){
     if(data == "LED: On"){
       ledsOn = true;
+      Serial.println("LEDS on");
     }else{
       ledsOn = false;
+      for(int i = 0; i < 4; i++){
+        digitalWrite(LED_G[i], LOW);
+        digitalWrite(LED_Y[i], LOW);
+        digitalWrite(LED_R[i], LOW);
+      }
+      Serial.println("LEDS off");
     }
   }else {
     Serial.println("Formato inválido!");
