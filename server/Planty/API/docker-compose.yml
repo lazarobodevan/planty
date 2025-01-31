@@ -1,9 +1,8 @@
 ﻿version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: postgres_planty
+  postgres_planty:
+    image: postgres
     restart: always
     environment:
       POSTGRES_USER: lazaro
@@ -11,30 +10,30 @@ services:
       POSTGRES_DB: planty
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   plantyapi:
     build:
       context: .
+      dockerfile: Dockerfile
     devices:
       - "/dev/ttyACM0:/dev/ttyACM0"
     privileged: true
     container_name: plantyapi
     environment:
       ASPNETCORE_ENVIRONMENT: http
+      ConnectionStrings__DefaultConnection: "Host=postgres_planty;Port=5432;Username=lazaro;Password=admin;Database=planty;"
     ports:
       - "5000:8080"
     depends_on:
-      - postgres
+      - postgres_planty
     networks:
       - app-network
-    command: >
-      sh -c "until pg_isready -h postgres_planty -U lazaro; do echo 'Waiting for PostgreSQL...'; sleep 2; done && dotnet ef database update && dotnet API.dll"
 
 volumes:
   postgres_data:
 
 networks:
-    app-network:
-      driver: bridge
+  app-network:
+    driver: bridge

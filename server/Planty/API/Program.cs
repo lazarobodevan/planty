@@ -36,6 +36,8 @@ builder.Services.AddSingleton<IReadingsService, SerialReadingService>(provider =
     return new SerialReadingService(serialService, scopeFactory);
 });
 
+
+
 var app = builder.Build();
 
 var serialService = app.Services.GetRequiredService<ISerialService>();
@@ -44,6 +46,10 @@ app.Lifetime.ApplicationStarted.Register(() => serialService.StartReading());
 
 var readingService = app.Services.GetRequiredService<IReadingsService>();
 app.Lifetime.ApplicationStarted.Register(() => readingService.StartTimers());
+
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+dbContext.Database.Migrate();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
