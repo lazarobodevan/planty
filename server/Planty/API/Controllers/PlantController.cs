@@ -1,5 +1,6 @@
 ﻿using API.Dtos.Plant;
 using API.Repositories;
+using API.Services;
 using API.Services.Impl;
 using API.UseCases.Plant;
 using Microsoft.AspNetCore.Http;
@@ -16,16 +17,17 @@ namespace API.Controllers
         private readonly GetPlantByIdUseCase getPlantByIdUseCase;
         private readonly DeletePlantUseCase deletePlantByIdUseCase;
         private readonly GetPlantsUseCase getPlantsUseCase;
+        private readonly UpdatePlantUseCase updatePlantUseCase;
 
         private readonly IPlantRepository plantRepository;
         private readonly ISensorRepository sensorRepository;
 
-        private readonly SerialService serialService;
+        private readonly ISerialService serialService;
 
         public PlantController(
             IPlantRepository plantRepository,
             ISensorRepository sensorRepository,
-            SerialService serialService
+            ISerialService serialService
             ) {
 
             this.sensorRepository = sensorRepository;
@@ -35,6 +37,7 @@ namespace API.Controllers
             getPlantByIdUseCase = new GetPlantByIdUseCase(plantRepository);
             deletePlantByIdUseCase = new DeletePlantUseCase(plantRepository);
             getPlantsUseCase = new GetPlantsUseCase(plantRepository);
+            updatePlantUseCase = new UpdatePlantUseCase(plantRepository);
 
             this.serialService = serialService;
         }
@@ -58,7 +61,11 @@ namespace API.Controllers
             try {
                 if (plantId.HasValue) {
                     var plant = await getPlantByIdUseCase.Execute(plantId.Value);
+
+                    if (plant == null) throw new Exception("Planta não cadastrada");
+
                     return StatusCode(StatusCodes.Status200OK, plant);
+
                 } else {
                     var plants = getPlantsUseCase.Execute();
                     return StatusCode(StatusCodes.Status200OK, plants);
@@ -75,6 +82,23 @@ namespace API.Controllers
                 serialService.UpdateSensor(deletedPlant.SensorPort, -1);
                 return StatusCode(StatusCodes.Status200OK);
             }catch (Exception ex) {
+                return new BadRequestObjectResult(new {erro = ex.Message});
+            }
+        }
+
+        [HttpPut("update/plantId={plantId}")]
+        public async Task<IActionResult> UpdatePlantAsync([FromRoute] Guid plantId, [FromBody] UpdatePlantDTO plantDTO) {
+            try {
+                var updatedPlant = await updatePlantUseCase.Execute(plantId, plantDTO);
+
+                if (plantDTO.IdealMoisturePercentage != null) {
+                    serialService.SendConfig();
+                }
+
+                return StatusCode(StatusCodes.Status200OK, updatedPlant);
+
+            }catch (Exception ex) {
+
                 return new BadRequestObjectResult(new {erro = ex.Message});
             }
         }

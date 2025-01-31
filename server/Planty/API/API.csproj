@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Dockerfile" />
+    <None Include="Dockerfile" />
   </ItemGroup>
 
   <ItemGroup>

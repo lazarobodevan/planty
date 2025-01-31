@@ -18,6 +18,7 @@ namespace API.Repositories.Impl {
             var readings = databaseContext.PlantsReadings
                 .Where(s => s.SensorPort == sensorId)
                 .OrderBy(x => x.CreatedAt)
+                .Take(24)
                 .ToList();
 
             return readings;

@@ -20,6 +20,10 @@ namespace API.Controllers {
         public IActionResult GetPlantReadingsBySensorId([FromRoute] string sensorId) {
             try {
                 var readings = plantReadingUseCase.Execute(sensorId);
+
+                if(readings == null) {
+                    return StatusCode(StatusCodes.Status404NotFound, new {erro = "Não há registros"});
+                }
                 return Ok(readings);
             }catch (Exception ex) {
                 return new BadRequestObjectResult(new { erro = ex.Message });

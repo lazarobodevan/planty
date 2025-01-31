@@ -28,8 +28,8 @@ namespace API.Repositories.Impl {
             return deletedPlant;
         }
 
-        public async Task<Plant> GetById(Guid Id) {
-            return await databaseContext.Plants.Where(item => item.Id == Id).FirstAsync();
+        public async Task<Plant?> GetById(Guid Id) {
+            return await databaseContext.Plants.Where(item => item.Id == Id).AsNoTracking().FirstOrDefaultAsync();
         }
 
         public List<Plant> GetAll() {
@@ -37,7 +37,7 @@ namespace API.Repositories.Impl {
         }
 
         public async Task<Plant> Update(Plant plant) {
-            var updatedPlant = databaseContext.Update(plant);
+            var updatedPlant = databaseContext.Plants.Update(plant);
             await databaseContext.SaveChangesAsync();
             return updatedPlant.Entity;
         }

@@ -6,7 +6,7 @@ namespace API.Repositories {
         Task<Plant> Create(Plant plant);
         Task<Plant> Update(Plant plant);
         Task<Plant> Delete(Guid Id);
-        Task<Plant> GetById(Guid Id);
+        Task<Plant?> GetById(Guid Id);
         List<Plant> GetAll();
 
     }

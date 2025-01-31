@@ -1,3 +1,11 @@
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.csproj.AssemblyReference.cache
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.GeneratedMSBuildEditorConfig.editorconfig
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.AssemblyInfoInputs.cache
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.AssemblyInfo.cs
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.csproj.CoreCompileInputs.cache
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cs
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cache
+C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.sourcelink.json
 C:\projs\planty\server\Planty\API\bin\Debug\net8.0\appsettings.Development.json
 C:\projs\planty\server\Planty\API\bin\Debug\net8.0\appsettings.json
 C:\projs\planty\server\Planty\API\bin\Debug\net8.0\API.exe
@@ -130,14 +138,6 @@ C:\projs\planty\server\Planty\API\bin\Debug\net8.0\runtimes\osx-x64\native\libSy
 C:\projs\planty\server\Planty\API\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.IO.Ports.dll
 C:\projs\planty\server\Planty\API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.IO.Ports.dll
 C:\projs\planty\server\Planty\API\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.csproj.AssemblyReference.cache
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.GeneratedMSBuildEditorConfig.editorconfig
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.AssemblyInfoInputs.cache
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.AssemblyInfo.cs
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.csproj.CoreCompileInputs.cache
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cs
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cache
-C:\projs\planty\server\Planty\API\obj\Debug\net8.0\API.sourcelink.json
 C:\projs\planty\server\Planty\API\obj\Debug\net8.0\staticwebassets.build.json
 C:\projs\planty\server\Planty\API\obj\Debug\net8.0\staticwebassets.development.json
 C:\projs\planty\server\Planty\API\obj\Debug\net8.0\staticwebassets\msbuild.API.Microsoft.AspNetCore.StaticWebAssets.props
