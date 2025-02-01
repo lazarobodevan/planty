@@ -14,7 +14,7 @@ namespace API.Dtos.Plant {
         public int IdealMoisturePercentage { get; set; }
 
         [Required]
-        [Range(0, 700, ErrorMessage = "O valor deve ser entre 0 e 700")]
+        [Range(0, 50000, ErrorMessage = "O valor deve ser entre 0 e 50000")]
         public int IdealLightExposure {  get; set; }
 
         [Required]
