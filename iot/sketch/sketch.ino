@@ -21,7 +21,7 @@ const double rx = r0 * exp(-beta/t0);
  
 // Parâmetros do circuito
 const double vcc = 5.0;
-const double R = 5000.0;
+const double R = 10000.0;
  
 // Numero de amostras na leitura
 const int nAmostras = 5;
@@ -211,24 +211,24 @@ void displayLeds(){
 
 }
 
-double getTemperatureInCelsius(int thermistorOutput){
-  int thermistor_adc_val;
-  double output_voltage, thermistor_resistance, therm_res_ln, temperature; 
-  thermistor_adc_val = thermistorOutput;
-  output_voltage = ( (thermistor_adc_val * 5.0) / 650.0 );
-  thermistor_resistance = ( ( 5 * ( 10.0 / output_voltage ) ) - 10 ); /* Resistance in kilo ohms */
-  thermistor_resistance = thermistor_resistance * 1000 ; /* Resistance in ohms   */
-  therm_res_ln = log(thermistor_resistance);
-  /*  Steinhart-Hart Thermistor Equation: */
-  /*  Temperature in Kelvin = 1 / (A + B[ln(R)] + C[ln(R)]^3)   */
-  /*  where A = 0.001129148, B = 0.000234125 and C = 8.76741*10^-8  */
-  temperature = ( 1 / ( 0.001129148 + ( 0.000234125 * therm_res_ln ) + ( 0.0000000876741 * therm_res_ln * therm_res_ln * therm_res_ln ) ) ); /* Temperature in Kelvin */
-  temperature = temperature - 273.15; /* Temperature in degree Celsius */
+double getTemperatureInCelsius(int thermistorOutput) {
+  double output_voltage, thermistor_resistance, temperature;
+  
+  // Corrigindo a conversão do ADC para tensão
+  output_voltage = (thermistorOutput * vcc) / 1023.0;
+
+  // Calculando a resistência do termistor
+  thermistor_resistance = R * ((vcc / output_voltage) - 1);
+
+  // Aplicando a equação Beta
+  temperature = beta / (log(thermistor_resistance / r0) + (beta / t0)) - 273.15;
+
   Serial.print("Temp: ");
-  Serial.print(temperature);
-  Serial.print("\n");
+  Serial.println(temperature);
+  
   return temperature;
 }
+
 
 void getSoilMoisture(){
 
@@ -237,7 +237,7 @@ void getSoilMoisture(){
   }
   for (int i = 0; i < sizeof(sensorValues) / sizeof(sensorValues[0]); i++) {
     // Mapeia a leitura de umidade de 0-600 para 0-100%
-    umidadePercentual = map(sensorValues[i], 673, 330, 0, 100);
+    umidadePercentual = map(sensorValues[i], 673, 50, 0, 100);
     moisturePercent[i] = umidadePercentual;
      Serial.print("A");
     Serial.print(moistureSensors[i] - A0); // Converte para o formato A0, A1, etc.

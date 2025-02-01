@@ -48,7 +48,7 @@ class PlantService implements IPlantService{
         throw TimeoutException("A requisição demorou muito para responder");
       });
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return GetPlantDto.fromJson(jsonDecode(response.body));
       } else {
         throw Exception("Erro ao criar planta: ${response.body}");

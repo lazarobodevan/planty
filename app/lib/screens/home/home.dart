@@ -92,7 +92,6 @@ class _HomeState extends State<Home> {
 
               if (state is LoadedPlantsState) {
                 return ListView(
-                  padding: const EdgeInsets.all(16),
                   children: state.plants.isEmpty
                       ? [
                           Center(
