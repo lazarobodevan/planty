@@ -2,7 +2,7 @@
 
 services:
   postgres_planty:
-    image: postgres
+    image: postgres:15
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
