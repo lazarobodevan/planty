@@ -10,7 +10,7 @@ class CreatePlantDto {
   final String description;
   final int idealMoisturePercentage;
   final int idealLightExposure;
-  final double idealTemperatureCelsius;
+  final int idealTemperatureCelsius;
   final String sensorPort;
 
   CreatePlantDto({
@@ -27,7 +27,7 @@ class CreatePlantDto {
     String? description,
     int? idealMoisturePercentage,
     int? idealLightExposure,
-    double? idealTemperatureCelsius,
+    int? idealTemperatureCelsius,
     String? sensorPort,
   }) =>
       CreatePlantDto(

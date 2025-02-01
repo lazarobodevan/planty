@@ -47,7 +47,7 @@ namespace API.Controllers
 
             try {
                 var createdPlant = await createPlantUseCase.Execute(createPlantDTO);
-                await serialService.SendConfig();
+                serialService.SendConfig();
 
                 return StatusCode(StatusCodes.Status201Created, createdPlant);
             }catch(Exception ex) {

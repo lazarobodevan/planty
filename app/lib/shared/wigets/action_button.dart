@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class ActionButton extends StatefulWidget {
   final bool? isActive;
-  const ActionButton({super.key, this.isActive});
+  final Function() onTap;
+  const ActionButton({super.key, this.isActive, required this.onTap});
 
   @override
   State<ActionButton> createState() => _ActionButtonState();
@@ -23,7 +24,9 @@ class _ActionButtonState extends State<ActionButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){},
+      onTap: (){
+        widget.onTap();
+      },
       child: Ink(
         height: 60,
         decoration: BoxDecoration(

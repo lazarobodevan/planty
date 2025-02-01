@@ -38,17 +38,20 @@ class PlantService implements IPlantService{
   Future<GetPlantDto> createPlant(CreatePlantDto plantDto) async{
     try {
       final uri = Uri.parse("${Environment.apiUrl}/plant/create");
+      final plantJson = jsonEncode(plantDto);
 
       final response = await http
-          .post(uri,body: plantDto.toJson())
-          .timeout(const Duration(seconds: 5), onTimeout: () {
+          .post(uri,body: plantJson, headers: {
+        "Content-Type": "application/json", // Especifica que é um JSON
+      },)
+          .timeout(const Duration(seconds: 10), onTimeout: () {
         throw TimeoutException("A requisição demorou muito para responder");
       });
 
       if (response.statusCode == 200) {
         return GetPlantDto.fromJson(jsonDecode(response.body));
       } else {
-        throw Exception("Erro ao criar planta: ${response.statusCode}");
+        throw Exception("Erro ao criar planta: ${response.body}");
       }
     } on TimeoutException catch (_) {
       throw Exception("A requisição expirou. Verifique sua conexão com a internet.");
