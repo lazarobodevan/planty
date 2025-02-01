@@ -1,4 +1,5 @@
 import 'package:app/entities/get_plant_dto.dart';
+import 'package:app/screens/home/widgets/led_toggle/led_toggle.dart';
 import 'package:app/screens/plant_editor/plant_editor.dart';
 import 'package:app/theme/theme_colors.dart';
 import 'package:app/theme/typography_styles.dart';
@@ -45,12 +46,17 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: LedToggle(),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context)=> const PlantEditor()
-          ));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const PlantEditor()));
         },
         shape: const CircleBorder(),
         backgroundColor: ThemeColors.primary2,
