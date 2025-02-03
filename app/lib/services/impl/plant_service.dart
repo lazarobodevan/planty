@@ -3,20 +3,20 @@ import 'dart:convert';
 
 import 'package:app/entities/create_plant_dto.dart';
 import 'package:app/entities/get_plant_dto.dart';
+import 'package:app/entities/update_plant_dto.dart';
 import 'package:app/environment.dart';
 import 'package:app/services/i_plant_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-class PlantService implements IPlantService{
-
+class PlantService implements IPlantService {
   @override
   Future<List<GetPlantDto>> getPlants() async {
     try {
       final uri = Uri.parse("${Environment.apiUrl}/plant/fetch");
 
-      final response = await http
-          .get(uri)
-          .timeout(const Duration(seconds: 5), onTimeout: () {
+      final response = await http.get(uri).timeout(const Duration(seconds: 5),
+          onTimeout: () {
         throw TimeoutException("A requisição demorou muito para responder");
       });
 
@@ -26,7 +26,8 @@ class PlantService implements IPlantService{
         throw Exception("Erro ao buscar plantas: ${response.statusCode}");
       }
     } on TimeoutException catch (_) {
-      throw Exception("A requisição expirou. Verifique sua conexão com a internet.");
+      throw Exception(
+          "A requisição expirou. Verifique sua conexão com a internet.");
     } on http.ClientException catch (e) {
       throw Exception("Erro de cliente HTTP: ${e.message}");
     } catch (e) {
@@ -35,16 +36,18 @@ class PlantService implements IPlantService{
   }
 
   @override
-  Future<GetPlantDto> createPlant(CreatePlantDto plantDto) async{
+  Future<GetPlantDto> createPlant(CreatePlantDto plantDto) async {
     try {
       final uri = Uri.parse("${Environment.apiUrl}/plant/create");
       final plantJson = jsonEncode(plantDto);
 
-      final response = await http
-          .post(uri,body: plantJson, headers: {
-        "Content-Type": "application/json", // Especifica que é um JSON
-      },)
-          .timeout(const Duration(seconds: 10), onTimeout: () {
+      final response = await http.post(
+        uri,
+        body: plantJson,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      ).timeout(const Duration(seconds: 10), onTimeout: () {
         throw TimeoutException("A requisição demorou muito para responder");
       });
 
@@ -54,7 +57,42 @@ class PlantService implements IPlantService{
         throw Exception("Erro ao criar planta: ${response.body}");
       }
     } on TimeoutException catch (_) {
-      throw Exception("A requisição expirou. Verifique sua conexão com a internet.");
+      throw Exception(
+          "A requisição expirou. Verifique sua conexão com a internet.");
+    } on http.ClientException catch (e) {
+      throw Exception("Erro de cliente HTTP: ${e.message}");
+    } catch (e) {
+      throw Exception("Erro inesperado: $e");
+    }
+  }
+
+  @override
+  Future<GetPlantDto> updatePlant(
+      String plantId, UpdatePlantDTO plantDto) async {
+    try {
+      final uri =
+          Uri.parse("${Environment.apiUrl}/plant/update/plantId=$plantId");
+      final plantJson = jsonEncode(plantDto);
+
+      final response = await http.put(
+        uri,
+        body: plantJson,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      ).timeout(const Duration(seconds: 10), onTimeout: () {
+        throw TimeoutException("A requisição demorou muito para responder");
+      });
+
+      if (response.statusCode == 200) {
+        return GetPlantDto.fromJson(jsonDecode(response.body));
+      } else {
+        debugPrint(response.body);
+        throw Exception("Erro ao atualizar planta: ${response.body}");
+      }
+    } on TimeoutException catch (_) {
+      throw Exception(
+          "A requisição expirou. Verifique sua conexão com a internet.");
     } on http.ClientException catch (e) {
       throw Exception("Erro de cliente HTTP: ${e.message}");
     } catch (e) {

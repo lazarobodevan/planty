@@ -17,12 +17,3 @@ class LoadPlantDetailsEvent extends PlantsEvent{
   @override
   List<Object?> get props => [plantId];
 }
-
-class CreatePlantEvent extends PlantsEvent{
-  final CreatePlantDto plantDto;
-
-  const CreatePlantEvent({required this.plantDto});
-
-  @override
-  List<Object?> get props => [plantDto];
-}

@@ -51,7 +51,7 @@ class GetPlantReadings {
   factory GetPlantReadings.fromJson(Map<String, dynamic> json) => GetPlantReadings(
     plantId: json["plantId"],
     plantName: json["plantName"],
-    description: json["description"],
+    description: json["plantDescription"],
     sensorPort: json["sensorPort"],
     idealMoisturePercentage: json["idealMoisturePercentage"],
     idealTemperatureCelsius: json["idealTemperatureCelsius"],

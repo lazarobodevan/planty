@@ -34,29 +34,3 @@ class LoadPlantsErrorState extends PlantsState{
   List<Object?> get props => [message];
 
 }
-
-class CreatingPlantState extends PlantsState{
-  @override
-  List<Object?> get props => [];
-
-}
-
-class CreatedPlantState extends PlantsState{
-  final GetPlantDto plantDto;
-
-  const CreatedPlantState({required this.plantDto});
-
-  @override
-  List<Object?> get props => [plantDto];
-
-}
-
-class CreatePlantErrorState extends PlantsState{
-  final String message;
-
-  const CreatePlantErrorState({required this.message});
-
-  @override
-  List<Object?> get props => [message];
-
-}

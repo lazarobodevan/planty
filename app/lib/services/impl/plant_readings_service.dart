@@ -9,9 +9,9 @@ class PlantReadingsService implements IPlantReadingsService {
   @override
   Future<GetPlantReadings> getPlantReadings(String sensorId) async {
     try {
-      var response = await get(Uri.parse(
-          "${Environment.apiUrl}/plantReading/sensorId=$sensorId"));
-      if(response.statusCode == 200){
+      var response = await get(
+          Uri.parse("${Environment.apiUrl}/plantReading/sensorId=$sensorId"));
+      if (response.statusCode == 200) {
         return GetPlantReadings.fromRawJson(response.body);
       }
       throw new Exception("Falha ao buscar leituras: ${response.body}");

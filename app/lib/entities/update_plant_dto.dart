@@ -14,6 +14,26 @@ class UpdatePlantDTO {
       this.idealMoisturePercentage,
       this.sensorPort});
 
+  UpdatePlantDTO copyWith({
+    String? name,
+    String? description,
+    int? idealTemperatureCelsius,
+    int? idealLightExposure,
+    int? idealMoisturePercentage,
+    String? sensorPort,
+  }) {
+    return UpdatePlantDTO(
+      name: name ?? this.name,
+      description: description ?? this.description,
+      idealTemperatureCelsius:
+          idealTemperatureCelsius ?? this.idealTemperatureCelsius,
+      idealLightExposure: idealLightExposure ?? this.idealLightExposure,
+      idealMoisturePercentage:
+          idealMoisturePercentage ?? this.idealMoisturePercentage,
+      sensorPort: sensorPort ?? this.sensorPort,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {};
 

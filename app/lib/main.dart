@@ -3,6 +3,7 @@ import 'package:app/screens/home/bloc/plants_bloc.dart';
 import 'package:app/screens/home/home.dart';
 import 'package:app/screens/home/widgets/led_toggle/bloc/led_bloc.dart';
 import 'package:app/screens/plant_details/bloc/plant_details_bloc.dart';
+import 'package:app/screens/plant_editor/bloc/plant_editor_bloc.dart';
 import 'package:app/services/i_led_service.dart';
 import 'package:app/services/i_plant_readings_service.dart';
 import 'package:app/services/i_plant_service.dart';
@@ -44,6 +45,11 @@ class MyApp extends StatelessWidget {
           create: (context) => PlantDetailsBloc(
             readingsService:
                 RepositoryProvider.of<IPlantReadingsService>(context),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => PlantEditorBloc(
+            plantService: RepositoryProvider.of<IPlantService>(context),
           ),
         ),
       ],

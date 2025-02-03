@@ -60,11 +60,11 @@ class GetPlantDto {
     name: json["name"],
     description: json["description"],
     idealMoisturePercentage: json["idealMoisturePercentage"],
-    currentMoisturePercentage: json["currentMoisturePercentage"],
+    currentMoisturePercentage: json["currentMoisturePercentage"]??0,
     idealLightExposure: json["idealLightExposure"],
-    currentLightExposure: json["currentLightExposure"],
+    currentLightExposure: json["currentLightExposure"]??0,
     idealTemperatureCelsius: json["idealTemperatureCelsius"],
-    currentTemperatureCelsius: json["currentTemperatureCelsius"]?.toDouble(),
+    currentTemperatureCelsius: json["currentTemperatureCelsius"]?.toDouble()??0,
     sensorPort: json["sensorPort"],
   );
 
