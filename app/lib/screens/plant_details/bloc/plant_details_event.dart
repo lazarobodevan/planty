@@ -14,3 +14,14 @@ class LoadPlantDetailsEvent extends PlantDetailsEvent{
 
 
 }
+
+class DeletePlantEvent extends PlantDetailsEvent{
+
+  final String plantId;
+
+  const DeletePlantEvent({required this.plantId});
+
+  @override
+  List<Object?> get props => [plantId];
+
+}

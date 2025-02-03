@@ -23,5 +23,7 @@ class PlantDetailsBloc extends Bloc<PlantDetailsEvent, PlantDetailsState> {
         emit(LoadPlantDetailsErrorState(message: e.toString()));
       }
     });
+
+
   }
 }

@@ -20,6 +20,7 @@ namespace API.UseCases.PlantReadingUseCase {
             var responseDTO = new PlantReadingsReponseDTO {
                 PlantId = plant.Id,
                 PlantName = plant.Name,
+                PlantDescription = plant.Description,
                 SensorPort = sensorPort,
                 IdealLightExposure = plant.IdealLightExposure,
                 IdealMoisturePercentage = plant.IdealMoisturePercentage,

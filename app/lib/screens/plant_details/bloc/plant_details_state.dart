@@ -31,3 +31,19 @@ class LoadPlantDetailsErrorState extends PlantDetailsState {
   @override
   List<Object> get props => [message];
 }
+
+class DeletedPlantState extends PlantDetailsState{
+  @override
+  List<Object?> get props => [];
+
+}
+
+class DeletePlantErrorState extends PlantDetailsState{
+  final String message;
+
+  const DeletePlantErrorState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+
+}

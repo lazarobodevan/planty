@@ -4,9 +4,12 @@ namespace API.Dtos.Plant {
     public class CreatePlantDTO {
 
         [Required]
+        [MaxLength(100)]
+        [MinLength(1)]
         public string Name { get; set; }
 
         [Required]
+        [MaxLength(100)]
         public string Description { get; set; }
 
         [Required]

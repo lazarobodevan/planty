@@ -40,6 +40,12 @@ class _PlantEditorState extends State<PlantEditor> {
   void initState() {
     if (widget.plant != null) {
       sensorPort = widget.plant!.sensorPort;
+      lightController.text = widget.plant!.idealLightExposure.toString();
+      moistureController.text = widget.plant!.idealMoisturePercentage.toString();
+      tempController.text = widget.plant!.idealTemperatureCelsius.toString();
+      nameController.text = widget.plant!.name;
+      descController.text = widget.plant!.description;
+
     }
     super.initState();
   }
