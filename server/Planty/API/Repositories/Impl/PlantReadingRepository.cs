@@ -15,10 +15,12 @@ namespace API.Repositories.Impl {
         }
 
         public List<PlantReading> GetBySensorId(string sensorId) {
+
+            var cutoffTime = DateTime.UtcNow.AddHours(-24);
+
             var readings = databaseContext.PlantsReadings
-                .Where(s => s.SensorPort == sensorId)
+                .Where(s => s.SensorPort == sensorId && s.CreatedAt >= cutoffTime)
                 .OrderBy(x => x.CreatedAt)
-                .Take(24)
                 .ToList();
 
             return readings;

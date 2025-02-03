@@ -1,47 +1,68 @@
 import 'package:app/entities/get_plant_dto.dart';
+import 'package:app/screens/plant_details/plant_details.dart';
 import 'package:app/theme/typography_styles.dart';
 import 'package:flutter/material.dart';
 
 class PlantItem extends StatelessWidget {
   final GetPlantDto plant;
+
   const PlantItem({required this.plant, super.key});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PlantDetails(
+              sensorId: plant.sensorPort,
+            ),
+          ),
+        );
+      },
       child: Ink(
         width: double.maxFinite,
         height: 90,
         decoration: BoxDecoration(
-          color: Colors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 6,
-                offset: Offset(0,5),
+                offset: Offset(0, 5),
               )
             ]),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
             children: [
-              Image.asset("assets/logo/icon.png", width: 40, height: 40,),
-              const SizedBox(width: 20,),
+              Image.asset(
+                "assets/logo/icon.png",
+                width: 40,
+                height: 40,
+              ),
+              const SizedBox(
+                width: 20,
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(plant.name, style: TypographyStyles.label2(),),
+                  Text(
+                    plant.name,
+                    style: TypographyStyles.label2(),
+                  ),
                   Row(
                     children: [
                       getWaterLevel(),
-                      const SizedBox(width: 5,),
-                      Text("${plant.currentMoisturePercentage}% - Ideal ${plant.idealMoisturePercentage}%"),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                          "${plant.currentMoisturePercentage}% - Ideal ${plant.idealMoisturePercentage}%"),
                     ],
                   ),
-
                 ],
               )
             ],
@@ -51,7 +72,7 @@ class PlantItem extends StatelessWidget {
     );
   }
 
-  Widget getWaterLevel(){
+  Widget getWaterLevel() {
     double idealLevelOffsetUpper = 1.1;
     double idealLevelOffsetDown = 0.9;
     double limitLevelOffsetUpper = 1.2;
@@ -73,16 +94,22 @@ class PlantItem extends StatelessWidget {
       asset = tooMuchWater;
     } else if (moisture >= ideal * limitLevelOffsetUpper) {
       asset = waterLimit;
-    } else if (moisture >= ideal * idealLevelOffsetDown && moisture <= ideal * idealLevelOffsetUpper) {
+    } else if (moisture >= ideal * idealLevelOffsetDown &&
+        moisture <= ideal * idealLevelOffsetUpper) {
       asset = idealWater;
     } else if (moisture >= ideal * limitLevelOffsetDown) {
       asset = waterLimit;
     } else if (moisture < ideal * extremeLevelOffsetDown) {
       asset = noWater;
     } else {
-      asset = waterLimit; // Caso esteja entre o nível extremo e o limite inferior.
+      asset =
+          waterLimit; // Caso esteja entre o nível extremo e o limite inferior.
     }
 
-    return Image.asset(asset, width: 20, height: 20,);
+    return Image.asset(
+      asset,
+      width: 20,
+      height: 20,
+    );
   }
 }

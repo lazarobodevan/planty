@@ -2,9 +2,12 @@ import 'package:app/environment.dart';
 import 'package:app/screens/home/bloc/plants_bloc.dart';
 import 'package:app/screens/home/home.dart';
 import 'package:app/screens/home/widgets/led_toggle/bloc/led_bloc.dart';
+import 'package:app/screens/plant_details/bloc/plant_details_bloc.dart';
 import 'package:app/services/i_led_service.dart';
+import 'package:app/services/i_plant_readings_service.dart';
 import 'package:app/services/i_plant_service.dart';
 import 'package:app/services/impl/led_service.dart';
+import 'package:app/services/impl/plant_readings_service.dart';
 import 'package:app/services/impl/plant_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +28,8 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider<IPlantService>(create: (context) => PlantService()),
         RepositoryProvider<ILedService>(create: (context) => LedService()),
+        RepositoryProvider<IPlantReadingsService>(
+            create: (context) => PlantReadingsService()),
         BlocProvider(
           create: (context) => PlantsBloc(
             plantService: RepositoryProvider.of<IPlantService>(context),
@@ -33,6 +38,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => LedBloc(
             ledService: RepositoryProvider.of<ILedService>(context),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => PlantDetailsBloc(
+            readingsService:
+                RepositoryProvider.of<IPlantReadingsService>(context),
           ),
         ),
       ],
