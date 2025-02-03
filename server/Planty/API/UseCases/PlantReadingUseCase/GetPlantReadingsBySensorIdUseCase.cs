@@ -5,21 +5,28 @@ using API.Repositories;
 namespace API.UseCases.PlantReadingUseCase {
     public class GetPlantReadingsBySensorIdUseCase {
         private readonly IPlantReadingRepository plantReadingRepository;
+        private readonly IPlantRepository plantRepository;
 
-        public GetPlantReadingsBySensorIdUseCase(IPlantReadingRepository plantReadingRepository) {
+        public GetPlantReadingsBySensorIdUseCase(IPlantReadingRepository plantReadingRepository, IPlantRepository plantRepository) {
             this.plantReadingRepository = plantReadingRepository;
+            this.plantRepository = plantRepository;
         }
 
-        public PlantReadingsReponseDTO? Execute(string sensorId) {
-            var readings =  plantReadingRepository.GetBySensorId(sensorId);
+        public PlantReadingsReponseDTO Execute(string sensorPort) {
 
-            if (readings.Count == 0) return null;
+            List<PlantReading> readings = plantReadingRepository.GetBySensorId(sensorPort);
+            Entities.Plant plant = plantRepository.GetBySensorPort(sensorPort);
 
             var responseDTO = new PlantReadingsReponseDTO {
-                PlantId = readings[0].PlantId,
-                SensorPort = sensorId,
+                PlantId = plant.Id,
+                PlantName = plant.Name,
+                SensorPort = sensorPort,
+                IdealLightExposure = plant.IdealLightExposure,
+                IdealMoisturePercentage = plant.IdealMoisturePercentage,
+                IdealTemperatureCelsius = plant.IdealTemperatureCelsius,
                 Readings = new List<PlantReadingDTO>()
             };
+
             foreach (var reading in readings) {
                 responseDTO.Readings.Add(new PlantReadingDTO {
                     Id = reading.Id,

@@ -9,11 +9,13 @@ namespace API.Controllers {
     public class PlantReadingController : ControllerBase {
 
         private readonly IPlantReadingRepository plantReadingRepository;
+        private readonly IPlantRepository plantRepository;
         private readonly GetPlantReadingsBySensorIdUseCase plantReadingUseCase;
 
-        public PlantReadingController(IPlantReadingRepository plantReadingRepository) {
+        public PlantReadingController(IPlantReadingRepository plantReadingRepository, IPlantRepository plantRepository) {
             this.plantReadingRepository = plantReadingRepository;
-            this.plantReadingUseCase = new GetPlantReadingsBySensorIdUseCase(plantReadingRepository);
+            this.plantRepository = plantRepository;
+            this.plantReadingUseCase = new GetPlantReadingsBySensorIdUseCase(plantReadingRepository, plantRepository);
         }
 
         [HttpGet("sensorId={sensorId}")]

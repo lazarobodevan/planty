@@ -8,6 +8,7 @@ namespace API.Repositories {
         Task<Plant> Delete(Guid Id);
         Task<Plant?> GetById(Guid Id);
         List<Plant> GetAll();
+        Plant GetBySensorPort(String sensorPort);
 
     }
 }

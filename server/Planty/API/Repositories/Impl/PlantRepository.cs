@@ -41,5 +41,10 @@ namespace API.Repositories.Impl {
             await databaseContext.SaveChangesAsync();
             return updatedPlant.Entity;
         }
+
+        public Plant GetBySensorPort(string sensorPort) {
+            var plant = databaseContext.Plants.Where(p => p.SensorPort == sensorPort).FirstOrDefault();
+            return plant;
+        }
     }
 }
