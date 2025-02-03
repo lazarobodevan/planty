@@ -58,16 +58,11 @@ class _PlantDetailsState extends State<PlantDetails> {
 
           if(state is LoadedPlantDetailsState) {
 
-            // Obtendo a leitura mais antiga
             final firstReadingTime = state.plantReadings.readings.first.createdAt;
 
-            // Pegando o tempo atual
-            final now = DateTime.now();
-
-            List<FlSpot> spots = state.plantReadings.readings.map((reading) {
-              // Calculando a diferença em horas desde a leitura mais antiga
-              double xValue = reading.createdAt.difference(firstReadingTime).inHours.toDouble();
-              return FlSpot(xValue, reading.moisture.toDouble());
+            List<FlSpot> spots = state.plantReadings.readings.asMap().entries.map((reading) {
+              double xValue = reading.value.createdAt.difference(firstReadingTime).inMinutes.toDouble() / 60;
+              return FlSpot(xValue.ceilToDouble(), reading.value.moisture.toDouble());
             }).toList();
 
             return SingleChildScrollView(
@@ -75,6 +70,7 @@ class _PlantDetailsState extends State<PlantDetails> {
               child: Column(
                 children: [
                   MyLineChart(
+                    key: UniqueKey(),
                     text: "Umidade",
                     lineColor: Colors.blue,
                     minX: 0, // Definindo minX como 0

@@ -26,7 +26,8 @@ class MyLineChart extends StatelessWidget {
         required this.maxX,
         required this.maxY,
         this.getXLabels,
-        required this.spots, required this.firstReadingTime});
+        required this.spots,
+        required this.firstReadingTime});
 
   @override
   Widget build(BuildContext context) {
@@ -45,26 +46,27 @@ class MyLineChart extends StatelessWidget {
             ? Container(
           height: 200,
           child: LineChart(
+
             LineChartData(
                 minX: minX,
                 maxX: maxX,
                 minY: minY,
                 maxY: maxY,
                 baselineY: minY,
-                lineTouchData:
-                LineTouchData(touchTooltipData: LineTouchTooltipData(
-                  getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                    return touchedSpots.map((LineBarSpot touchedSpot) {
-                      return LineTooltipItem(
-                        '${touchedSpot.y}',
-                        const TextStyle(
-                          color: Colors.white, // Cor do texto do tooltip
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    }).toList();
-                  },
-                )),
+                lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                        return touchedSpots.map((LineBarSpot touchedSpot) {
+                          return LineTooltipItem(
+                            '${touchedSpot.y}',
+                            const TextStyle(
+                              color: Colors.white, // Cor do texto do tooltip
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }).toList();
+                      },
+                    )),
                 titlesData: FlTitlesData(
                   show: true,
                   leftTitles: AxisTitles(
@@ -88,7 +90,7 @@ class MyLineChart extends StatelessWidget {
                       showTitles: false,
                     ),
                   ),
-                  bottomTitles:  AxisTitles(
+                  bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 30,
@@ -101,23 +103,23 @@ class MyLineChart extends StatelessWidget {
                   drawVerticalLine: false,
                 ),
                 borderData: FlBorderData(show: false),
-                lineBarsData: spots
-                    .map((el) => LineChartBarData(
-                    isCurved: true,
-                    barWidth: 3,
-                    color: lineColor,
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: belowChartColor ??
-                          const LinearGradient(
-                              begin: Alignment(0, 1),
-                              colors: [
-                                Colors.transparent,
-                                Colors.transparent
-                              ]),
-                    ),
-                    spots: spots))
-                    .toList()),
+                lineBarsData: [
+                  LineChartBarData(
+                      isCurved: true,
+                      barWidth: 3,
+                      color: lineColor,
+                      belowBarData: BarAreaData(
+                        show: true,
+                        gradient: belowChartColor ??
+                            const LinearGradient(
+                                begin: Alignment(0, 1),
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.transparent
+                                ]),
+                      ),
+                      spots: spots)
+                ]),
           ),
         )
             : const AspectRatio(
@@ -131,12 +133,12 @@ class MyLineChart extends StatelessWidget {
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     var style = TypographyStyles.paragraph4();
-    // Convertendo o valor (em horas) para um DateTime real
     DateTime time = firstReadingTime.add(Duration(hours: value.toInt()));
     String formattedTime = DateFormat('HH').format(time);
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      child: Transform.rotate( angle: 1.2, child: Text(formattedTime, style: style)),
+      child:
+      Transform.rotate(angle: 1.2, child: Text(formattedTime, style: style)),
     );
   }
 }
