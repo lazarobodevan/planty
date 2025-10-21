@@ -4,6 +4,9 @@ Aplicação IOT focado em **gerenciamento de plantas**, cuidado e monitoramento 
 **NECESSÁRIO POSSUIR ARDUINO E COMPONENTES**
 ---
 
+<img width="904" height="804" alt="image" src="https://github.com/user-attachments/assets/6b52b2e4-4c08-415d-a286-49fb901ca8f6" />
+
+
 ## 🎯 Visão Geral
 
 O Planty permite que o usuário organize suas plantas, registre seu ciclo de cuidados (rega, adubação, poda), receba lembretes personalizados e visualize o histórico de saúde da planta.  
